@@ -1,0 +1,32 @@
+name: "Security Scan: IaC"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  iac-audit:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Pull your code into the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Run Conftest against your files using your rules
+      - name: Run OPA Rego Scan
+        uses: instrumenta/conftest-action@master
+        with:
+          files: infrastructure/s3-bucket.yaml
+          policy: policy/
+          # This tells conftest to treat the .yaml as CloudFormation
+          parser: yaml
+
+      # Step 3: (Optional) Upload results as an artifact
+      - name: Upload Scan Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iac-security-report
+          path: conftest.json
