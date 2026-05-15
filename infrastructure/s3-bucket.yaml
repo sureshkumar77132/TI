@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-company-private-data
+      # Note: We purposely 'forgot' the PublicAccessBlockConfiguration here 
+      # so the scan will catch it and fail.
